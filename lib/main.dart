@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:svts_temple_app/services/mailingListAPI.dart';
 
 void main() => runApp(MyApp());
 
@@ -46,15 +47,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-
     Container templeInfo = Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        "Information about the temple",
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.display1,
-      )
-    );
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          "Information about the temple",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.display1,
+        ));
+
 
     DefaultTabController controller = DefaultTabController(
       length: 5,
@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Icon(Icons.calendar_today),
             templeInfo,
-            Icon(Icons.mail),
+            MyCustomForm(),
             Icon(Icons.photo),
             Icon(Icons.folder),
           ],
