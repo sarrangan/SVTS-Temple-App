@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'calendar/calendar_event.dart';
 
 void main() => runApp(MyApp());
 
@@ -73,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: TabBarView(
           children: [
-            Icon(Icons.calendar_today),
+            CalendarEvent(),
             templeInfo,
             Icon(Icons.mail),
             Icon(Icons.photo),
