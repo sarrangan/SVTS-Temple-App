@@ -2,10 +2,33 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 Future<List<Event>> fetchEvents() async {
-  final response = await http.get('http://srividya.org/wp-json/tribe/events/v1/events');
+  return await fetchNineMonthsOfEvents();
+}
 
+Future<List<Event>> fetchNineMonthsOfEvents() async {
+  var now = new DateTime.now();
+  var startDate = new DateTime(now.year, now.month - 3, 1);
+  List<Future<List<Event>>> responses = [];
+  for(int i = 0; i < 9; i++) {
+    var date = new DateTime(startDate.year, startDate.month + i, 1);
+    responses.add(fetchEventForMonth(date));
+  }
+
+  List<List<Event>> nestedEvents = await Future.wait(responses);
+  return nestedEvents.expand((f) => f).toList();
+}
+
+Future<List<Event>> fetchEventForMonth(DateTime date) async {
+  var monthStart = new DateTime(date.year, date.month, 1);
+  var monthEnd = new DateTime(date.year, date.month + 1, 0);
+  String monthStartString = new DateFormat('yyyy-MM-dd').format(monthStart);
+  String monthEndString = new DateFormat('yyyy-MM-dd').format(monthEnd);
+
+  final response = await http.get("https://srividya.org/wp-json/tribe/events/v1/events/?per_page=50&start_date=$monthStartString&end_date=$monthEndString&status=publish&page=1");
+  // TODO: handle the next_url when there are more than 50 events jsonResponse['next_rest_url']
   if (response.statusCode == 200) {
     Map<String, dynamic> jsonResponse = json.decode(response.body);
     List<dynamic> jsonEvents = jsonResponse['events'];
@@ -16,7 +39,7 @@ Future<List<Event>> fetchEvents() async {
     }
     return events;
   } else {
-    throw Exception('Failed to get calendar events');
+    throw Exception('Failed to get calendar events for $monthStartString');
   }
 }
 

@@ -23,6 +23,7 @@ dependencies:
   intl: ^0.16.0
   flutter_html: ^0.10.4
   url_launcher: ^5.1.2
+  sticky_headers: "^0.1.8"
 
 dev_dependencies:
   flutter_test:

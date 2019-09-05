@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 
 import 'event_details.dart';
 import 'get_event.dart';
@@ -73,11 +74,40 @@ class CalendarEvent extends StatelessWidget {
     );
   }
 
+  List<Widget> calendarWidgets(List<Event> events, BuildContext context) {
+    List<Widget> calendarWidgets = [];
+    for(int i = 0; i < events.length; i++) {
+      int month = events[i].startTime.month;
+      List<Widget> monthWidgets = [];
+      while(i < events.length && events[i].startTime.month == month) {
+        monthWidgets.add(calendarTile(events[i], context));
+        i++;
+      }
+      calendarWidgets.add(
+        StickyHeader(
+          header: Container(
+            height: 50,
+            color: Colors.blue,
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              new DateFormat('MMMM').format(new DateTime(2019, month, 1)),
+              style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          content: Column(children: monthWidgets),
+        ),
+      );
+    }
+    return calendarWidgets;
+  }
+
   Widget calendar(List<Event> events, BuildContext context) {
+    List<Widget> calendarW = calendarWidgets(events, context);
     return ListView.builder(
-      itemCount: events.length,
+      itemCount: calendarW.length,
       itemBuilder: (context, index) {
-        return calendarTile(events[index], context);
+        return calendarW[index];
       },
     );
   }
