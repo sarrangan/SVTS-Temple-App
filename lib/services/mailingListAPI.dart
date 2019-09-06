@@ -1,8 +1,7 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:svts_temple_app/models/contacts.dart';
+
 
 // Define a custom Form widget.
 class MyCustomForm extends StatefulWidget {
@@ -21,10 +20,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-
-  bool isTempleNews = false;
-  bool isVolunteerNews = false;
-  bool isCampNews = false;
+  final _user = User();
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +36,13 @@ class MyCustomFormState extends State<MyCustomForm> {
               labelText: 'Email Address',
             ),
             validator: (value) {
-              return value.isEmpty ? "Please enter an email address" : null;
+              if (value.isEmpty) {
+                return 'Please enter your email address';
+              }
+              return null;
             },
+            onSaved: (value) =>
+                setState(() => _user.email = value),
           ),
           TextFormField(
             decoration: const InputDecoration(
@@ -49,8 +50,13 @@ class MyCustomFormState extends State<MyCustomForm> {
               labelText: 'First Name',
             ),
             validator: (value) {
-              return value.isEmpty ? "Please enter your first name" : null;
+              if (value.isEmpty) {
+                return 'Please enter your first name';
+              }
+              return null;
             },
+            onSaved: (value) =>
+                setState(() => _user.fName = value),
           ),
           TextFormField(
             decoration: const InputDecoration(
@@ -58,50 +64,52 @@ class MyCustomFormState extends State<MyCustomForm> {
               labelText: 'Last Name',
             ),
             validator: (value) {
-              return value.isEmpty ? "Please enter your last name" : null;
+              if (value.isEmpty) {
+                return 'Please enter your last name';
+              }
+              return null;
             },
+            onSaved: (value) =>
+                setState(() => _user.lName = value),
           ),
-          Text("Please select at least one of the following interest",
-              style: TextStyle(fontWeight: FontWeight.bold),),
+          Text(
+            "Please select at least one of the following interest",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           Text(
               "Receive our bimonthly Temple newsletter, including news about festivals, classes, workshops and events"),
           CheckboxListTile(
               title: Text("Temple News"),
-              value: isTempleNews,
-              onChanged: (bool newValue) {
-                setState(() {
-                  isTempleNews = newValue;
-                });
-              }),
+              value: _user.mailingLists[User.TempleNews],
+              onChanged: (bool newValue) =>
+                  setState(() => _user.mailingLists[User.TempleNews] = newValue)
+          ),
           Text("Receive information about special volunteering opportunities"),
           CheckboxListTile(
               title: Text("Volunteer News"),
-              value: isVolunteerNews,
-              onChanged: (bool newValue) {
-                setState(() {
-                  isVolunteerNews = newValue;
-                });
-              }),
+              value: _user.mailingLists[User.VolunteerNews],
+              onChanged: (bool newValue) =>
+                  setState(() => _user.mailingLists[User.VolunteerNews] = newValue)
+          ),
           Text(
               "Receive alerts about registering your child(ren) for our yearly summer Camp"),
           CheckboxListTile(
               title: Text("VSI (Camp) News"),
-              value: isCampNews,
-              onChanged: (bool newValue) {
-                setState(() {
-                  isCampNews = newValue;
-                });
-              }),
+              value: _user.mailingLists[User.VSINews],
+              onChanged: (bool newValue) =>
+                  setState(() => _user.mailingLists[User.VSINews] = newValue)
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: RaisedButton(
               onPressed: () {
+                final form = _formKey.currentState;
                 // Validate returns true if the form is valid, or false
                 // otherwise.
-                if (_formKey.currentState.validate()) {
-                  // If the form is valid, display a Snackbar.
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data')));
+                if (form.validate()) {
+                  form.save();
+                  _user.save();
+                  _showDialog(context);
                 }
               },
               child: Text('Submit'),
@@ -111,4 +119,9 @@ class MyCustomFormState extends State<MyCustomForm> {
       ),
     );
   }
+}
+
+_showDialog(BuildContext context) {
+  Scaffold.of(context)
+      .showSnackBar(SnackBar(content: Text('Submitting form')));
 }
