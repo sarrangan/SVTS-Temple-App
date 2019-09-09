@@ -24,6 +24,7 @@ Future<List<Event>> fetchNineMonthsOfEvents() async {
 Future<List<Event>> fetchEventForMonth(DateTime date) async {
   var monthStart = new DateTime(date.year, date.month, 1);
   var monthEnd = new DateTime(date.year, date.month + 1, 0);
+
   String monthStartString = new DateFormat('yyyy-MM-dd').format(monthStart);
   String monthEndString = new DateFormat('yyyy-MM-dd').format(monthEnd);
 

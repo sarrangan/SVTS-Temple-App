@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sticky_headers/sticky_headers.dart';
+import 'package:parallax_image/parallax_image.dart';
 
 import 'event_details.dart';
 import 'get_event.dart';
@@ -11,27 +12,34 @@ class CalendarEvent extends StatelessWidget {
   final Event event;
 
   CalendarEvent({this.event});
-  
+
   Future<List<Event>> listEvents() async {
     List<Event> events = await fetchEvents();
     return events;
   }
 
-  Widget calendarTile(Event event, BuildContext context) {
-    return new Container(
-      child: Row(
+  bool sameDay(DateTime a, DateTime b) {
+    DateTime dayA = new DateTime(a.year, a.month, a.day);
+    DateTime dayB = new DateTime(b.year, b.month, b.day);
+    return dayA == dayB;
+  }
+
+  Widget calendarTile(List<Event> events, BuildContext context) {
+    List<Widget> eventTiles = [];
+    for(int i = 0; i < events.length; i++) {
+      eventTiles.add(eventTile(events[i], context));
+    }
+    return Container(child: Row(
         children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: dateTile(event, context),
-          ),
-          Expanded(
-            flex: 8,
-            child: eventTile(event, context),
-          ),
-        ]
+          Expanded(flex: 2, child: dateTile(events[0], context)),
+          Expanded(flex: 8, child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: eventTiles,
+          )),
+        ],
+        crossAxisAlignment: CrossAxisAlignment.start,
       ),
-      margin: const EdgeInsets.only(top: 5, bottom: 5),
+      margin: EdgeInsets.only(top: 8.0, bottom: 8.0),
     );
   }
 
@@ -40,12 +48,13 @@ class CalendarEvent extends StatelessWidget {
       child: new Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
-          color: const Color(0xff7c94b6),
+          color: eventTileColor(event),
         ),
         child: new InkWell(
           child: Container(
+            height: 30.0,
             child: Text(event.title, style: TextStyle(color: Colors.white)),
-            padding: const EdgeInsets.all(5),
+            padding: const EdgeInsets.all(8.0),
           ),
           onTap: (){
               Navigator.push(
@@ -56,7 +65,7 @@ class CalendarEvent extends StatelessWidget {
           borderRadius: BorderRadius.circular(5.0),
         ),
       ),
-      margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 5, bottom: 5),
+      margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 8.0),
     );
   }
 
@@ -65,12 +74,16 @@ class CalendarEvent extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Text(DateFormat.E().format(event.startTime)),
-          Text(
-            DateFormat.d().format(event.startTime),
-            style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.5)),
+          new Container(
+            child: Text(
+              DateFormat.d().format(event.startTime),
+              style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 1.5),
+            ),
+            padding: EdgeInsets.only(top: 5.0, bottom: 15.0),
+          ),
         ],
-        
       ),
+      padding: EdgeInsets.only(left: 8.0, right: 8.0),
     );
   }
 
@@ -80,26 +93,80 @@ class CalendarEvent extends StatelessWidget {
       int month = events[i].startTime.month;
       List<Widget> monthWidgets = [];
       while(i < events.length && events[i].startTime.month == month) {
-        monthWidgets.add(calendarTile(events[i], context));
-        i++;
+        List<Event> sameDayEvents = [];
+        DateTime eventDay = events[i].startTime;
+        while(i < events.length && sameDay(events[i].startTime, eventDay)) {
+          sameDayEvents.add(events[i]);
+          i++;
+        }
+        monthWidgets.add(calendarTile(sameDayEvents, context));
       }
       calendarWidgets.add(
-        StickyHeader(
-          header: Container(
-            height: 50,
-            color: Colors.blue,
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              new DateFormat('MMMM').format(new DateTime(2019, month, 1)),
-              style: const TextStyle(color: Colors.white),
+        StickyHeaderBuilder(
+          builder: (context, stuckAmount) {
+            stuckAmount = stuckAmount.clamp(0.0, 1.0);
+            return Container(
+              height: 100 - (50 * (1 - stuckAmount)),
+              alignment: Alignment.centerLeft,
+              color: Colors.black,
+              child: ParallaxImage(
+                image: new AssetImage('assets/$month.jpg'),
+                extent: 1000,
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: textStroke(new DateFormat('MMMM').format(new DateTime(2019, month, 1))),
+                  ),
+                ),
               ),
-            ),
+              );
+            },
           content: Column(children: monthWidgets),
-        ),
+        )
       );
     }
     return calendarWidgets;
+  }
+
+  Widget textStroke(String text) {
+    return Stack(
+      children: <Widget>[
+        // Stroked text as border.
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 20,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 1
+              ..color = Colors.blueGrey[900],
+          ),
+        ),
+        // Solid text as fill.
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color eventTileColor(Event event) {
+    if (event.categories == null || event.categories.length == 0) {
+      return Colors.purple;
+    }
+    if (event.categories.length > 1) {
+      return Colors.deepOrange;
+    }
+    if (event.categories[0] == "Festivals") {
+      return Colors.red;
+    }
+    return Colors.teal;
   }
 
   Widget calendar(List<Event> events, BuildContext context) {
