@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -31,7 +32,8 @@ Future<List<Event>> fetchEventForMonth(DateTime date) async {
   final response = await http.get("https://srividya.org/wp-json/tribe/events/v1/events/?per_page=50&start_date=$monthStartString&end_date=$monthEndString&status=publish&page=1");
   // TODO: handle the next_url when there are more than 50 events jsonResponse['next_rest_url']
   if (response.statusCode == 200) {
-    Map<String, dynamic> jsonResponse = json.decode(response.body);
+    var unescape = new HtmlUnescape();
+    Map<String, dynamic> jsonResponse = json.decode(unescape.convert(utf8.decode(response.bodyBytes)));
     List<dynamic> jsonEvents = jsonResponse['events'];
     List<Event> events = [];
     for(int i = 0; i < jsonEvents.length; i++) {
