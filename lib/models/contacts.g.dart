@@ -17,15 +17,17 @@ Map<String, dynamic> _$MergeFieldsToJson(MergeFields instance) =>
 NewContact _$NewContactFromJson(Map<String, dynamic> json) {
   return NewContact(
       emailAddress: json['email_address'] as String,
-      status: json['status'] as String,
       mergeFields: json['merge_fields'] == null
           ? null
-          : MergeFields.fromJson(json['merge_fields'] as Map<String, dynamic>));
+          : MergeFields.fromJson(json['merge_fields'] as Map<String, dynamic>),
+      interests: (json['interests'] as Map<String, dynamic>)?.map(
+        (k, e) => MapEntry(k, e as bool),
+      ));
 }
 
 Map<String, dynamic> _$NewContactToJson(NewContact instance) =>
     <String, dynamic>{
       'email_address': instance.emailAddress,
-      'status': instance.status,
-      'merge_fields': instance.mergeFields
+      'merge_fields': instance.mergeFields,
+      'interests': instance.interests
     };

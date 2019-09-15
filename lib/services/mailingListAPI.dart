@@ -4,16 +4,16 @@ import 'package:svts_temple_app/models/contacts.dart';
 
 
 // Define a custom Form widget.
-class MyCustomForm extends StatefulWidget {
+class MailingListForm extends StatefulWidget {
   @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
+  MailingListFormState createState() {
+    return MailingListFormState();
   }
 }
 
 // Define a corresponding State class.
 // This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
+class MailingListFormState extends State<MailingListForm> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //
@@ -21,6 +21,22 @@ class MyCustomFormState extends State<MyCustomForm> {
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   final _user = User();
+
+  
+  void _submit() async {
+    final form = _formKey.currentState;
+    // Validate returns true if the form is valid, or false
+    // otherwise.
+    if (form.validate()) {
+      form.save();
+      try {
+        String result = await _user.save();
+      } catch (e) {
+        String emailIdError = "Member already exists";
+      }
+      _showDialog(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,38 +96,29 @@ class MyCustomFormState extends State<MyCustomForm> {
               "Receive our bimonthly Temple newsletter, including news about festivals, classes, workshops and events"),
           CheckboxListTile(
               title: Text("Temple News"),
-              value: _user.mailingLists[User.TempleNews],
+              value: _user.mailInterests[User.TempleNews],
               onChanged: (bool newValue) =>
-                  setState(() => _user.mailingLists[User.TempleNews] = newValue)
+                  setState(() => _user.mailInterests[User.TempleNews] = newValue)
           ),
           Text("Receive information about special volunteering opportunities"),
           CheckboxListTile(
               title: Text("Volunteer News"),
-              value: _user.mailingLists[User.VolunteerNews],
+              value: _user.mailInterests[User.VolunteerNews],
               onChanged: (bool newValue) =>
-                  setState(() => _user.mailingLists[User.VolunteerNews] = newValue)
+                  setState(() => _user.mailInterests[User.VolunteerNews] = newValue)
           ),
           Text(
               "Receive alerts about registering your child(ren) for our yearly summer Camp"),
           CheckboxListTile(
               title: Text("VSI (Camp) News"),
-              value: _user.mailingLists[User.VSINews],
+              value: _user.mailInterests[User.VSINews],
               onChanged: (bool newValue) =>
-                  setState(() => _user.mailingLists[User.VSINews] = newValue)
+                  setState(() => _user.mailInterests[User.VSINews] = newValue)
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: RaisedButton(
-              onPressed: () {
-                final form = _formKey.currentState;
-                // Validate returns true if the form is valid, or false
-                // otherwise.
-                if (form.validate()) {
-                  form.save();
-                  _user.save();
-                  _showDialog(context);
-                }
-              },
+              onPressed: _submit,
               child: Text('Submit'),
             ),
           ),
@@ -125,3 +132,20 @@ _showDialog(BuildContext context) {
   Scaffold.of(context)
       .showSnackBar(SnackBar(content: Text('Submitting form')));
 }
+
+// https://github.com/mmcc007/modal_progress_hud/blob/master/example/lib/main.dart
+// For server side validation of email address
+
+//{
+//    "email_address": "anagayan.ariaran@gmail.com",
+//    "status": "subscribed",
+//    "merge_fields": {
+//        "FNAME": "Anagayan",
+//        "LNAME": "Ariaran"
+//    },
+//		"interests": {
+//			"ca903fe669": true, Temple
+//			"32c1cd062c": true, Volunteer
+//			"32936e01ff": true  Camp
+//		}
+//}

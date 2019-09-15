@@ -17,15 +17,17 @@ class MergeFields {
   Map<String, dynamic> toJson() => _$MergeFieldsToJson(this);
 }
 
+
 @JsonSerializable()
 class NewContact {
   @JsonKey(name: 'email_address')
   String emailAddress;
-  String status;
   @JsonKey(name: 'merge_fields')
   MergeFields mergeFields;
 
-  NewContact({this.emailAddress, this.status, this.mergeFields});
+  Map<String, bool> interests;
+
+  NewContact({this.emailAddress, this.mergeFields, this.interests});
 
   factory NewContact.fromJson(Map<String, dynamic> json) => _$NewContactFromJson(json);
 
@@ -34,26 +36,27 @@ class NewContact {
 
 
 class User {
-
-  static const String TempleNews = 'temple';
-  static const String VolunteerNews = 'volunteer';
-  static const String VSINews = 'vsi';
+  static const String TempleNews = 'ca903fe669';
+  static const String VolunteerNews = '32c1cd062c';
+  static const String VSINews = '32936e01ff';
 
   String email;
   String fName;
   String lName;
 
-  Map mailingLists = {
+  Map mailInterests = {
     TempleNews: false,
     VolunteerNews: false,
     VSINews: false
   };
 
   save() async {
-    NewContact contact = NewContact(emailAddress: email, status: 'subscribed', mergeFields: MergeFields(firstName: fName, lastName: lName));
+    var userInterests = Map.from(mailInterests);
+    userInterests.removeWhere((key, value) => value == false);
+
+    NewContact contact = NewContact(emailAddress: email, mergeFields: MergeFields(firstName: fName, lastName: lName), interests: userInterests);
     print('Saving user information');
-    String added = await addContact(contact);
-    print(added);
+    return addContact(contact);
   }
 
 }

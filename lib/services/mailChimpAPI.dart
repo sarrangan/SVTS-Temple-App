@@ -35,6 +35,7 @@ Future<String> addContact(NewContact newContact) async {
   final basicAuth = constructAuthToken();
 
   final body = json.encode(newContact);
+  print(body);
 
   final response = await http.post(url,
       headers: <String, String>{'authorization': basicAuth, 'content-type': 'application/json'}, body: body);
@@ -47,9 +48,15 @@ Future<String> addContact(NewContact newContact) async {
     return response.body;
   }
   else if (response.statusCode == 400 && response.body.contains('Member Exists')) {
-    return 'Error: You are already subsribed to the mailing list';
+    throw MemberExistsException('Error - You are already subsribed to the mailing list');
   }
   else {
     throw Exception('Failed to retrieve data from: $url');
   }
+}
+
+class MemberExistsException implements Exception {
+  final String message;
+  const MemberExistsException(this.message);
+  String toString() => 'MemberExistsException: $message';
 }

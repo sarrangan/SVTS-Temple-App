@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Icon(Icons.calendar_today),
             templeInfo,
-            MyCustomForm(),
+            MailingListForm(),
             Icon(Icons.photo),
             Icon(Icons.folder),
           ],
