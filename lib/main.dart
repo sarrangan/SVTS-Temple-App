@@ -106,14 +106,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     DefaultTabController controller = DefaultTabController(
-      length: 5,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.calendar_today)),
               Tab(icon: Icon(Icons.info)),
-              Tab(icon: Icon(Icons.mail)),
               Tab(icon: Icon(Icons.photo)),
               Tab(icon: Icon(Icons.folder_open)),
             ],
@@ -124,7 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Icon(Icons.calendar_today),
             templeInfo,
-            Icon(Icons.mail),
             Icon(Icons.photo),
             Icon(Icons.folder),
           ],
