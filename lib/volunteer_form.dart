@@ -246,10 +246,6 @@ class VolunteerFormState extends State<VolunteerForm> {
   final TextEditingController _endDateController = new TextEditingController();
   final TextEditingController _timeController = new TextEditingController();
   Future _chooseDate(BuildContext context, DateTime initialDate) async {
-    var now = new DateTime.now();
-    // var initialDate = convertToDate(initialDateString) ?? now;
-    // initialDate = (initialDate.year >= 1900 && initialDate.isBefore(now) ? initialDate : now);
-
     var result = await DateRangePicker.showDatePicker(
         context: context,
         initialFirstDate: initialDate,
