@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'calendar/calendar_event.dart';
-import 'volunteer_form.dart';
+import 'volunteer_form/volunteer_form.dart';
+import 'mailing_list/services/mailingListAPI.dart';
 import 'package:flutter/rendering.dart';
 import 'colors.dart';
 
@@ -108,13 +109,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     DefaultTabController controller = DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.calendar_today)),
               Tab(icon: Icon(Icons.info)),
+              Tab(icon: Icon(Icons.mail)),
               Tab(icon: Icon(Icons.photo)),
               Tab(icon: Icon(Icons.folder_open)),
             ],
@@ -125,6 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             CalendarEvent(),
             templeInfo,
+            MyCustomForm(),
             Icon(Icons.photo),
             VolunteerForm(),
           ],
