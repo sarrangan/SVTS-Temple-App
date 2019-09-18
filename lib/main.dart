@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'calendar/calendar_event.dart';
+import 'volunteer_form.dart';
 
 void main() => runApp(MyApp());
 
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
             templeInfo,
             Icon(Icons.mail),
             Icon(Icons.photo),
-            Icon(Icons.folder),
+            VolunteerForm(),
           ],
         ),
       ),
