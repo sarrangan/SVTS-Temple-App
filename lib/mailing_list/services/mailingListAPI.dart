@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:svts_temple_app/models/contacts.dart';
+import '../models/contacts.dart';
 
 
 // Define a custom Form widget.

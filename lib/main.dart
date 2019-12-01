@@ -1,5 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:svts_temple_app/services/mailingListAPI.dart';
+import 'calendar/calendar_event.dart';
+import 'volunteer_form/volunteer_form.dart';
+import 'mailing_list/services/mailingListAPI.dart';
+import 'package:flutter/rendering.dart';
+import 'colors.dart';
+
+// TODO: Build a Shrine Theme (103)
+final ThemeData _templeTheme = _buildShrineTheme();
+
+ThemeData _buildShrineTheme() {
+  final ThemeData base = ThemeData.light();
+  return base.copyWith(
+    accentColor: Colors.yellow[900],
+    primaryColor: Colors.redAccent[700],
+    buttonTheme: base.buttonTheme.copyWith(
+      buttonColor: Colors.amber[100],
+      textTheme: ButtonTextTheme.normal,
+    ),
+    scaffoldBackgroundColor: templeBackgroundWhite,
+    cardColor: templeBackgroundWhite,
+    textSelectionColor: templePink100,
+    errorColor: templeErrorRed,
+    // TODO: Add the text themes (103)
+    // TODO: Add the icon themes (103)
+    // TODO: Decorate the inputs (103)
+  );
+}
 
 void main() => runApp(MyApp());
 
@@ -9,7 +35,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sri Vidya Temple App',
-      theme: ThemeData(
+      theme: _templeTheme,
+        //ThemeData(
         // This is the theme of your application.
         //
         // Try running your application with "flutter run". You'll see the
@@ -19,8 +46,8 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.red,
-      ),
+        //primarySwatch: Colors.red,
+      //),
       home: MyHomePage(title: 'Sri Vidya Temple'),
     );
   }
@@ -47,14 +74,39 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    Container templeInfo = Container(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          "Information about the temple",
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.display1,
-        ));
 
+    // Container templeInfo = Container(
+    //   padding: const EdgeInsets.all(8.0),
+    //   child: Text(
+    //     "Information about the temple",
+    //     textAlign: TextAlign.center,
+    //     style: Theme.of(context).textTheme.display1,
+    //   )
+    // );
+
+    Color color = Theme.of(context).primaryColor;
+
+    Container templeInfo = Container(
+      padding: const EdgeInsets.all(4.0),
+      child: new GridView.count(
+          crossAxisCount: 3,
+          padding: const EdgeInsets.all(4.0),
+          children:[
+              _buildButtonColumn(color, Icons.call, 'CALL'),
+              _buildButtonColumn(color, Icons.pin_drop, 'MAP'),
+              _buildButtonColumn(color, Icons.hourglass_full, 'HOURS'),
+              _buildButtonColumn(color, Icons.email, 'EMAIL'),
+              _buildButtonColumn(color, Icons.view_list, 'SCHEDULE'),
+              _buildButtonColumn(color, Icons.card_giftcard, 'SPONSOR'),
+              _buildButtonColumn(color, Icons.wc, 'ATTIRE'),
+              _buildButtonColumn(color, Icons.language, 'WEBSITE'),
+              _buildButtonColumn(color, Icons.local_library, 'FAQ'),
+              _buildButtonColumn(color, Icons.live_tv, 'LIVE'),
+              _buildButtonColumn(color, Icons.tap_and_play, 'NEWS'),
+              _buildButtonColumn(color, Icons.notifications, 'SUBSCRIBE'),
+            ],
+          ),
+    );
 
     DefaultTabController controller = DefaultTabController(
       length: 5,
@@ -73,11 +125,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: TabBarView(
           children: [
-            Icon(Icons.calendar_today),
+            CalendarEvent(),
             templeInfo,
             MailingListForm(),
             Icon(Icons.photo),
-            Icon(Icons.folder),
+            VolunteerForm(),
           ],
         ),
       ),
@@ -90,5 +142,26 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return controller;
+  }
+
+    Column _buildButtonColumn(Color color, IconData icon, String label) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: color),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: color,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

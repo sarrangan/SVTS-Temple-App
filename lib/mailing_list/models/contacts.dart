@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:svts_temple_app/services/mailChimpAPI.dart';
+import '../services/mailChimpAPI.dart';
 
 part 'contacts.g.dart';
 
