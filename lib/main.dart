@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'calendar/calendar_event.dart';
 import 'volunteer_form/volunteer_form.dart';
 import 'mailing_list/services/mailingListAPI.dart';
+import 'live_stream/live_stream.dart';
 import 'package:flutter/rendering.dart';
 import 'colors.dart';
 
@@ -128,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
             CalendarEvent(),
             templeInfo,
             MyCustomForm(),
-            Icon(Icons.photo),
+            LiveStream(),
             VolunteerForm(),
           ],
         ),
