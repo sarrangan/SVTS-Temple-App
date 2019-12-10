@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'colors.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 // TODO: Build a Shrine Theme (103)
 final ThemeData _templeTheme = _buildShrineTheme();
@@ -139,8 +141,23 @@ class _MyHomePageState extends State<MyHomePage> {
     return controller;
   }
 
-    Column _buildButtonColumn(Color color, IconData icon, String label) {
-    return Column(
+    GestureDetector _buildButtonColumn(Color color, IconData icon, String label) {
+    onTap(){
+      if(label == "CALL"){
+        launch("tel://5855331970");
+      }else if(label == "EMAIL"){
+        launch("mailto://info@srividya.org");
+      }else if(label == "WEBSITE"){
+        launch("https://srividya.org/");
+      }else if(label == "MAP"){
+        launch("https://maps.apple.com/?sll=42.997884, -77.702095");
+      }else if(label == "SUBSCRIBE"){
+        VolunteerForm();
+      }
+    } 
+    return GestureDetector(
+      onTap: onTap,
+      child:Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -157,6 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ],
-    );
+    ));
   }
 }
+
