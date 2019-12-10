@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Tab(icon: Icon(Icons.calendar_today)),
               Tab(icon: Icon(Icons.info)),
               Tab(icon: Icon(Icons.mail)),
-              Tab(icon: Icon(Icons.photo)),
+              Tab(icon: Icon(Icons.live_tv)),
               Tab(icon: Icon(Icons.folder_open)),
             ],
           ),
