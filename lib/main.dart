@@ -150,9 +150,23 @@ class _MyHomePageState extends State<MyHomePage> {
       }else if(label == "WEBSITE"){
         launch("https://srividya.org/");
       }else if(label == "MAP"){
-        launch("https://maps.apple.com/?sll=42.997884, -77.702095");
+        launch("https://maps.apple.com/?sll=42.997884,-77.702095");
       }else if(label == "SUBSCRIBE"){
         VolunteerForm();
+      }else if(label == "LIVE"){
+        launch("https://livestream.com/accounts/3812069/svts");
+      }else if(label == "NEWS"){
+        launch("https://srividya.org/category/temple-news/");
+      }else if(label == "FAQ"){
+        launch("https://srividya.org/faqs/");
+      }else if(label == "SCHEDULE"){
+        launch("https://srividya.org/visiting-info/daily-puja-schedule/");
+      }else if(label == "HOURS"){
+        launch("https://srividya.org/visiting-info/temple-hours/");
+      }else if(label == "ATTIRE"){
+        launch("https://srividya.org/visiting-info/dress-code-etiquette/");
+      }else{
+        launch("https://bookstore.srividya.org/");
       }
     } 
     return GestureDetector(
