@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
               _buildButtonColumn(color, Icons.local_library, 'FAQ'),
               _buildButtonColumn(color, Icons.live_tv, 'LIVE'),
               _buildButtonColumn(color, Icons.tap_and_play, 'NEWS'),
-              _buildButtonColumn(color, Icons.notifications, 'SUBSCRIBE'),
+              _buildButtonColumn(color, Icons.notifications, 'INSTAGRAM'),
             ],
           ),
     );
@@ -151,8 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
         launch("https://srividya.org/");
       }else if(label == "MAP"){
         launch("https://maps.apple.com/?sll=42.997884,-77.702095");
-      }else if(label == "SUBSCRIBE"){
-        VolunteerForm();
+      }else if(label == "INSTAGRAM"){
+        launch("https://www.instagram.com/srividyatemple/")
       }else if(label == "LIVE"){
         launch("https://livestream.com/accounts/3812069/svts");
       }else if(label == "NEWS"){
