@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'calendar/calendar_event.dart';
 import 'volunteer_form/volunteer_form.dart';
 import 'mailing_list/services/mailingListAPI.dart';
+import 'live_stream/live_stream.dart';
 import 'package:flutter/rendering.dart';
 import 'colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // TODO: Build a Shrine Theme (103)
 final ThemeData _templeTheme = _buildShrineTheme();
@@ -103,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
               _buildButtonColumn(color, Icons.local_library, 'FAQ'),
               _buildButtonColumn(color, Icons.live_tv, 'LIVE'),
               _buildButtonColumn(color, Icons.tap_and_play, 'NEWS'),
-              _buildButtonColumn(color, Icons.notifications, 'SUBSCRIBE'),
+              _buildButtonColumn(color, Icons.photo_camera, 'INSTAGRAM'),
             ],
           ),
     );
@@ -117,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Tab(icon: Icon(Icons.calendar_today)),
               Tab(icon: Icon(Icons.info)),
               Tab(icon: Icon(Icons.mail)),
-              Tab(icon: Icon(Icons.photo)),
+              Tab(icon: Icon(Icons.live_tv)),
               Tab(icon: Icon(Icons.folder_open)),
             ],
           ),
@@ -129,6 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
             templeInfo,
             MailingListForm(),
             Icon(Icons.photo),
+            LiveStream(),
             VolunteerForm(),
           ],
         ),
@@ -144,8 +147,37 @@ class _MyHomePageState extends State<MyHomePage> {
     return controller;
   }
 
-    Column _buildButtonColumn(Color color, IconData icon, String label) {
-    return Column(
+    GestureDetector _buildButtonColumn(Color color, IconData icon, String label) {
+    onTap(){
+      if(label == "CALL"){
+        launch("tel://5855331970");
+      }else if(label == "EMAIL"){
+        launch("mailto://info@srividya.org");
+      }else if(label == "WEBSITE"){
+        launch("https://srividya.org/");
+      }else if(label == "MAP"){
+        launch("https://maps.apple.com/?sll=42.997884,-77.702095");
+      }else if(label == "INSTAGRAM"){
+        launch("https://www.instagram.com/srividyatemple/");
+      }else if(label == "LIVE"){
+        launch("https://livestream.com/accounts/3812069/svts");
+      }else if(label == "NEWS"){
+        launch("https://srividya.org/category/temple-news/");
+      }else if(label == "FAQ"){
+        launch("https://srividya.org/faqs/");
+      }else if(label == "SCHEDULE"){
+        launch("https://srividya.org/visiting-info/daily-puja-schedule/");
+      }else if(label == "HOURS"){
+        launch("https://srividya.org/visiting-info/temple-hours/");
+      }else if(label == "ATTIRE"){
+        launch("https://srividya.org/visiting-info/dress-code-etiquette/");
+      }else{
+        launch("https://bookstore.srividya.org/");
+      }
+    }
+    return GestureDetector(
+      onTap: onTap,
+      child:Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -162,6 +194,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ],
-    );
+    ));
   }
 }

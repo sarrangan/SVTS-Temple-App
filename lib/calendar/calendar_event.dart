@@ -7,9 +7,10 @@ import 'calendar_tile.dart';
 import 'get_event.dart';
 
 class CalendarEvent extends StatelessWidget {
-
+  final Events _events = new Events();
+  ScrollController scrollController;
   Future<List<Event>> listEvents() async {
-    List<Event> events = await fetchEvents();
+    List<Event> events = await _events.fetchEvents(false);
     return events;
   }
 
@@ -21,7 +22,7 @@ class CalendarEvent extends StatelessWidget {
 
   List<Widget> calendarWidgets(List<Event> events, BuildContext context) {
     List<Widget> calendarWidgets = [];
-    for(int i = 0; i < events.length; i++) {
+    for(int i = 0; i < events.length;) {
       int month = events[i].startTime.month;
       List<Widget> monthWidgets = [];
       while(i < events.length && events[i].startTime.month == month) {
@@ -53,7 +54,9 @@ class CalendarEvent extends StatelessWidget {
 
   Widget calendar(List<Event> events, BuildContext context) {
     List<Widget> calendarW = calendarWidgets(events, context);
+    scrollController = new ScrollController(initialScrollOffset: _events.calendarScrollOffset());
     return ListView.builder(
+      controller: scrollController,
       itemCount: calendarW.length,
       itemBuilder: (context, index) {
         return calendarW[index];
@@ -71,7 +74,7 @@ class CalendarEvent extends StatelessWidget {
         } else if(snapshot.hasError) {
           return Text("${snapshot.error}");
         }
-        return CircularProgressIndicator();
+        return Image.asset('assets/loadingAnimation2.gif');
       }
     );
   }
