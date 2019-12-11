@@ -130,7 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
             CalendarEvent(),
             templeInfo,
             MailingListForm(),
-            Icon(Icons.photo),
             LiveStream(),
             VolunteerForm(),
           ],
