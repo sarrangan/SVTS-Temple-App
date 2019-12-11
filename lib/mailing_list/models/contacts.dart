@@ -27,6 +27,8 @@ class NewContact {
 
   Map<String, bool> interests;
 
+  String status = "subscribed";
+
   NewContact({this.emailAddress, this.mergeFields, this.interests});
 
   factory NewContact.fromJson(Map<String, dynamic> json) => _$NewContactFromJson(json);
@@ -43,20 +45,4 @@ class User {
   String email;
   String fName;
   String lName;
-
-  Map mailInterests = {
-    TempleNews: false,
-    VolunteerNews: false,
-    VSINews: false
-  };
-
-  save() async {
-    var userInterests = Map.from(mailInterests);
-    userInterests.removeWhere((key, value) => value == false);
-
-    NewContact contact = NewContact(emailAddress: email, mergeFields: MergeFields(firstName: fName, lastName: lName), interests: userInterests);
-    print('Saving user information');
-    return addContact(contact);
-  }
-
 }

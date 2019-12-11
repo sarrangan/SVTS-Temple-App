@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:svts_temple_app/mailing_list/services/mailChimpAPI.dart';
 import '../models/contacts.dart';
-
 
 // Define a custom Form widget.
 class MailingListForm extends StatefulWidget {
@@ -20,132 +20,189 @@ class MailingListFormState extends State<MailingListForm> {
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-  final _user = User();
 
-  
-  void _submit() async {
+//  Form Controllers
+  final emailController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+
+  bool isTempleNews = false;
+  bool isVolunteerNews = false;
+  bool isVSINews = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    emailController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    super.dispose();
+  }
+
+  Future<String> validateEmail(payload) async {
     final form = _formKey.currentState;
-    // Validate returns true if the form is valid, or false
-    // otherwise.
     if (form.validate()) {
-      form.save();
-      try {
-        String result = await _user.save();
-      } catch (e) {
-        String emailIdError = "Member already exists";
-      }
-      _showDialog(context);
+      Map<String, bool> userInterests = Map.from(payload['interests']);
+      userInterests.removeWhere((key, value) => value == false);
+
+      NewContact contact = NewContact(
+          emailAddress: payload['email'],
+          mergeFields: MergeFields(
+              firstName: payload['firstName'], lastName: payload['lastName']),
+          interests: userInterests);
+
+      final response = await addContact(contact);
+
+      return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(response['title'], textAlign: TextAlign.center),
+            content: Text(response['message'], textAlign: TextAlign.center),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            decoration: const InputDecoration(
-              icon: Icon(Icons.mail),
-              labelText: 'Email Address',
-            ),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter your email address';
-              }
-              return null;
-            },
-            onSaved: (value) =>
-                setState(() => _user.email = value),
-          ),
-          TextFormField(
-            decoration: const InputDecoration(
-              icon: Icon(Icons.person),
-              labelText: 'First Name',
-            ),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter your first name';
-              }
-              return null;
-            },
-            onSaved: (value) =>
-                setState(() => _user.fName = value),
-          ),
-          TextFormField(
-            decoration: const InputDecoration(
-              icon: Icon(Icons.person),
-              labelText: 'Last Name',
-            ),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter your last name';
-              }
-              return null;
-            },
-            onSaved: (value) =>
-                setState(() => _user.lName = value),
-          ),
-          Text(
-            "Please select at least one of the following interest",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Text(
-              "Receive our bimonthly Temple newsletter, including news about festivals, classes, workshops and events"),
-          CheckboxListTile(
-              title: Text("Temple News"),
-              value: _user.mailInterests[User.TempleNews],
-              onChanged: (bool newValue) =>
-                  setState(() => _user.mailInterests[User.TempleNews] = newValue)
-          ),
-          Text("Receive information about special volunteering opportunities"),
-          CheckboxListTile(
-              title: Text("Volunteer News"),
-              value: _user.mailInterests[User.VolunteerNews],
-              onChanged: (bool newValue) =>
-                  setState(() => _user.mailInterests[User.VolunteerNews] = newValue)
-          ),
-          Text(
-              "Receive alerts about registering your child(ren) for our yearly summer Camp"),
-          CheckboxListTile(
-              title: Text("VSI (Camp) News"),
-              value: _user.mailInterests[User.VSINews],
-              onChanged: (bool newValue) =>
-                  setState(() => _user.mailInterests[User.VSINews] = newValue)
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: RaisedButton(
-              onPressed: _submit,
-              child: Text('Submit'),
-            ),
-          ),
-        ],
-      ),
-    );
+    return new Scaffold(
+        appBar: new AppBar(
+          title: new Text("Email Sign Up Form", style: TextStyle(fontSize: 20)),
+        ),
+        body: new SafeArea(
+            top: false,
+            bottom: true,
+            child: new Form(
+              key: _formKey,
+              child: new ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.person),
+                          labelText: 'First Name',
+                        ),
+                        controller: firstNameController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter your first name';
+                          }
+                          return null;
+                        },
+                      )),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.person),
+                          labelText: 'Last Name',
+                        ),
+                        controller: lastNameController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter your last name';
+                          }
+                          return null;
+                        },
+                      )),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.mail),
+                          labelText: 'Email Address',
+                        ),
+                        controller: emailController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter your email address';
+                          }
+                          return null;
+                        },
+                      )),
+                  const Divider(
+                    height: 25.0,
+                  ),
+                  CheckboxListTile(
+                      title:
+                          Text("Temple News", style: TextStyle(fontSize: 16)),
+                      subtitle: Text(
+                          "Information about festivals, classes, workshops, events and bimonthly temple newsletter"),
+                      secondary: Icon(Icons.notifications_active),
+                      isThreeLine: true,
+                      value: isTempleNews,
+                      onChanged: (bool newValue) =>
+                          setState(() => isTempleNews = newValue)),
+                  CheckboxListTile(
+                      title: Text("Volunteer News",
+                          style: TextStyle(fontSize: 16)),
+                      subtitle: Text(
+                          "Information about special volunteering opportunities"),
+                      secondary: Icon(Icons.group),
+                      isThreeLine: true,
+                      value: isVolunteerNews,
+                      onChanged: (bool newValue) =>
+                          setState(() => isVolunteerNews = newValue)),
+                  CheckboxListTile(
+                      title: Text(
+                        "Vibhuthi Saivate Immersion News",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      subtitle: Text(
+                          "Information and alerts about registering your child(ren) for our yearly summer camp"),
+                      secondary: Icon(Icons.child_care),
+                      isThreeLine: true,
+                      value: isVSINews,
+                      onChanged: (bool newValue) =>
+                          setState(() => isVSINews = newValue)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16.0,
+                    ),
+                    child: RaisedButton(
+                      onPressed: () {
+                        validateEmail({
+                          'email': emailController.text,
+                          'firstName': firstNameController.text,
+                          'lastName': lastNameController.text,
+                          'interests': {
+                            User.TempleNews: isTempleNews,
+                            User.VolunteerNews: isVolunteerNews,
+                            User.VSINews: isVSINews,
+                          }
+                        });
+                      },
+                      child: Text('Submit',
+                          style: TextStyle(
+                              color: Colors.amber[100], fontSize: 16)),
+                      color: Colors.redAccent[700],
+                    ),
+                  ),
+                ],
+              ),
+            )));
   }
 }
 
 _showDialog(BuildContext context) {
-  Scaffold.of(context)
-      .showSnackBar(SnackBar(content: Text('Submitting form')));
+  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Submitting form')));
 }
-
-// https://github.com/mmcc007/modal_progress_hud/blob/master/example/lib/main.dart
-// For server side validation of email address
-
-//{
-//    "email_address": "anagayan.ariaran@gmail.com",
-//    "status": "subscribed",
-//    "merge_fields": {
-//        "FNAME": "Anagayan",
-//        "LNAME": "Ariaran"
-//    },
-//		"interests": {
-//			"ca903fe669": true, Temple
-//			"32c1cd062c": true, Volunteer
-//			"32936e01ff": true  Camp
-//		}
-//}
