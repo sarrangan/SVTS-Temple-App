@@ -15,6 +15,7 @@ class _LiveStreamState extends State<LiveStream> {
 
   @override
   Widget build(BuildContext context){
+    FocusScope.of(context).requestFocus(FocusNode());
     return Container(
       child: WebView(
         initialUrl: 'https://livestream.com/accounts/3812069/events/2376453/player?width=1200&height=1000enableInfoAndActivity=true&defaultDrawer=feed&autoPlay=true&mute=true',

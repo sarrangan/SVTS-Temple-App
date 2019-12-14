@@ -80,6 +80,7 @@ class MailingListFormState extends State<MailingListForm> {
 
   @override
   Widget build(BuildContext context) {
+    FocusScope.of(context).requestFocus(FocusNode());
     // Build a Form widget using the _formKey created above.
     return new Scaffold(
         appBar: new AppBar(

@@ -57,6 +57,7 @@ class VolunteerFormState extends State<VolunteerForm> {
 
   @override
   Widget build(BuildContext context) {
+    FocusScope.of(context).requestFocus(FocusNode());
     // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,

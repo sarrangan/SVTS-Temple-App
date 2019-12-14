@@ -20,11 +20,13 @@ class Event {
       var category = json['categories'][i]['name'];
       categories.add(category);
     }
+
+    var description = json['description'].toString().replaceAll(new RegExp("alt=(.*?)\""), "");
     var startDateDetails = json['start_date_details'];
     var endDateDetails = json['end_date_details'];
     return Event(
       title: json['title'],
-      description: json['description'],
+      description: description,
       categories: categories,
       startTime: DateTime(
         int.parse(startDateDetails['year']),
