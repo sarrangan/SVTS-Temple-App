@@ -79,7 +79,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-
+  int index = 1;
   @override
   Widget build(BuildContext context) {
     // Container templeInfo = Container(
@@ -115,30 +115,57 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
     );
 
+    List<Widget> _children = [
+      CalendarEvent(),
+      templeInfo,
+      MailingListForm(),
+      LiveStream(),
+      VolunteerForm(),
+    ];
     DefaultTabController controller = DefaultTabController(
       length: 5,
       child: Scaffold(
         appBar: AppBar(
-          bottom: TabBar(
-            tabs: [
-              Tab(icon: Icon(Icons.calendar_today)),
-              Tab(icon: Icon(Icons.info)),
-              Tab(icon: Icon(Icons.mail)),
-              Tab(icon: Icon(Icons.live_tv)),
-              Tab(icon: Icon(Icons.folder_open)),
-            ],
-          ),
           title: Text('Sri Vidya Temple'),
         ),
-        body: TabBarView(
-          children: [
-            CalendarEvent(),
-            templeInfo,
-            MailingListForm(),
-            LiveStream(),
-            VolunteerForm(),
-          ],
-        ),
+        bottomNavigationBar: new Theme(
+          data: Theme.of(context).copyWith(
+          // sets the background color of the `BottomNavigationBar`
+          canvasColor: _templeTheme.primaryColor,
+        textTheme: Theme
+            .of(context)
+            .textTheme
+            .copyWith(caption: new TextStyle(color: Colors.yellow))),
+        child: BottomNavigationBar(
+          currentIndex: index,
+          onTap: (int i) {setState((){index = i;});},
+          items: [
+            new BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today),
+              title: new Text('Calendar'),
+            ),
+            new BottomNavigationBarItem(
+              icon: Icon(Icons.info),
+              title: new Text('Temple Info'),
+            ),
+            new BottomNavigationBarItem(
+              icon: Icon(Icons.mail),
+              title: new Text('Mailing List'),
+            ),
+            new BottomNavigationBarItem(
+              icon: Icon(Icons.live_tv),
+              title: new Text('Live Stream'),
+            ),
+            new BottomNavigationBarItem(
+              icon: Icon(Icons.folder_open),
+              title: new Text('Volunteer Form'),
+            ),
+          ]
+        )),
+        body: Container(
+          child: _children[index],
+          constraints: BoxConstraints.expand(),
+        )
       ),
     );
 
