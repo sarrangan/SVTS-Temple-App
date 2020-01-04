@@ -7,6 +7,8 @@ import 'live_stream/live_stream.dart';
 import 'package:flutter/rendering.dart';
 import 'colors.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // TODO: Build a Shrine Theme (103)
 final ThemeData _templeTheme = _buildShrineTheme();
@@ -108,9 +110,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               _buildButtonColumn(color, Icons.wc, 'ATTIRE'),
               _buildButtonColumn(color, Icons.language, 'WEBSITE'),
               _buildButtonColumn(color, Icons.local_library, 'FAQ'),
-              _buildButtonColumn(color, Icons.live_tv, 'LIVE'),
+              _buildButtonColumn(color, FontAwesomeIcons.facebook, 'FACEBOOK'),
               _buildButtonColumn(color, Icons.tap_and_play, 'NEWS'),
-              _buildButtonColumn(color, Icons.photo_camera, 'INSTAGRAM'),
+              _buildButtonColumn(color, FontAwesomeIcons.instagram, 'INSTAGRAM'),
             ],
           ),
     );
@@ -156,10 +158,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               icon: Icon(Icons.live_tv),
               title: new Text('Live Stream'),
             ),
-            new BottomNavigationBarItem(
-              icon: Icon(Icons.folder_open),
-              title: new Text('Volunteer Form'),
-            ),
+            // new BottomNavigationBarItem(
+            //   icon: Icon(Icons.folder_open),
+            //   title: new Text('Volunteer Form'),
+            // ),
           ]
         )),
         body: Container(
@@ -187,11 +189,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       }else if(label == "WEBSITE"){
         launch("https://srividya.org/");
       }else if(label == "MAP"){
-        launch("https://maps.apple.com/?sll=42.997884,-77.702095");
+        if(Platform.isIOS) {
+          launch("https://maps.apple.com/?sll=42.997884,-77.702095&q=Sri%20Vidya%20Temple%20Society");
+        } else {
+          launch("https://www.google.com/maps/search/?api=1&query=Sri+Vidya+Temple+Society");
+        }
       }else if(label == "INSTAGRAM"){
         launch("https://www.instagram.com/srividyatemple/");
-      }else if(label == "LIVE"){
-        launch("https://livestream.com/accounts/3812069/svts");
+      }else if(label == "FACEBOOK"){
+        launch("https://www.facebook.com/SriVidyaTemple/");
       }else if(label == "NEWS"){
         launch("https://srividya.org/category/temple-news/");
       }else if(label == "FAQ"){
