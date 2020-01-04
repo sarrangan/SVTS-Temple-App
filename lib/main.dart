@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       templeInfo,
       MailingListForm(),
       LiveStream(),
-//      VolunteerForm(),
+      VolunteerForm(),
     ];
     DefaultTabController controller = DefaultTabController(
       length: 5,
