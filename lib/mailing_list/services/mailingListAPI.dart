@@ -83,9 +83,6 @@ class MailingListFormState extends State<MailingListForm> {
     FocusScope.of(context).requestFocus(FocusNode());
     // Build a Form widget using the _formKey created above.
     return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Email Sign Up Form", style: TextStyle(fontSize: 20)),
-        ),
         body: new SafeArea(
             top: false,
             bottom: true,
