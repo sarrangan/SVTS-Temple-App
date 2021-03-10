@@ -1,8 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'calendar/calendar_event.dart';
 import 'volunteer_form/volunteer_form.dart';
-import 'mailing_list/services/mailingListAPI.dart';
+import 'mailing_list/services/mailingList.dart';
 import 'live_stream/live_stream.dart';
 import 'package:flutter/rendering.dart';
 import 'colors.dart';
@@ -16,8 +17,8 @@ final ThemeData _templeTheme = _buildShrineTheme();
 ThemeData _buildShrineTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
-    accentColor: Colors.yellow[900],
-    primaryColor: Colors.redAccent[700],
+    accentColor: Color(0xff35106a),
+    primaryColor: Color(0xffef9a3d),
     buttonTheme: base.buttonTheme.copyWith(
       buttonColor: Colors.amber[100],
       textTheme: ButtonTextTheme.normal,
@@ -45,17 +46,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sri Vidya Temple App',
       theme: _templeTheme,
-        //ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        //primarySwatch: Colors.red,
+      //ThemeData(
+      // This is the theme of your application.
+      //
+      // Try running your application with "flutter run". You'll see the
+      // application has a blue toolbar. Then, without quitting the app, try
+      // changing the primarySwatch below to Colors.green and then invoke
+      // "hot reload" (press "r" in the console where you ran "flutter run",
+      // or simply save your changes to "hot reload" in a Flutter IDE).
+      // Notice that the counter didn't reset back to zero; the application
+      // is not restarted.
+      //primarySwatch: Colors.red,
       //),
       home: MyHomePage(title: 'Sri Vidya Temple'),
     );
@@ -82,6 +83,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   int index = 1;
+
   @override
   Widget build(BuildContext context) {
     // Container templeInfo = Container(
@@ -93,82 +95,85 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     //   )
     // );
 
-    Color color = Theme.of(context).primaryColor;
+    Color color = Theme.of(context).accentColor;
 
     Container templeInfo = Container(
       padding: const EdgeInsets.all(4.0),
       child: new GridView.count(
-          crossAxisCount: 3,
-          padding: const EdgeInsets.all(4.0),
-          children:[
-              _buildButtonColumn(color, Icons.call, 'CALL'),
-              _buildButtonColumn(color, Icons.pin_drop, 'MAP'),
-              _buildButtonColumn(color, Icons.hourglass_full, 'HOURS'),
-              _buildButtonColumn(color, Icons.email, 'EMAIL'),
-              _buildButtonColumn(color, Icons.view_list, 'SCHEDULE'),
-              _buildButtonColumn(color, Icons.card_giftcard, 'SPONSOR'),
-              _buildButtonColumn(color, Icons.wc, 'ATTIRE'),
-              _buildButtonColumn(color, Icons.language, 'WEBSITE'),
-              _buildButtonColumn(color, Icons.local_library, 'FAQ'),
-              _buildButtonColumn(color, FontAwesomeIcons.facebook, 'FACEBOOK'),
-              _buildButtonColumn(color, Icons.tap_and_play, 'NEWS'),
-              _buildButtonColumn(color, FontAwesomeIcons.instagram, 'INSTAGRAM'),
-            ],
-          ),
+        crossAxisCount: 3,
+        padding: const EdgeInsets.all(4.0),
+        children: [
+          _buildButtonColumn(color, Icons.call, 'CALL'),
+          _buildButtonColumn(color, Icons.email, 'EMAIL'),
+          _buildButtonColumn(color, Icons.pin_drop, 'MAP'),
+          _buildButtonColumn(color, Icons.wc, 'VISITOR INFO'),
+          _buildButtonColumn(color, Icons.hourglass_full, 'HOURS'),
+          _buildButtonColumn(color, Icons.tap_and_play, 'NEWS'),
+          _buildButtonColumn(color, FontAwesomeIcons.gopuram, 'GRANITE TEMPLE'),
+          _buildButtonColumn(color, Icons.card_giftcard, 'SPONSOR'),
+          _buildButtonColumn(color, FontAwesomeIcons.youtube, 'YOUTUBE'),
+          _buildButtonColumn(color, FontAwesomeIcons.child, 'BALA VIDYA'),
+          _buildButtonColumn(color, FontAwesomeIcons.facebook, 'FACEBOOK'),
+          _buildButtonColumn(color, FontAwesomeIcons.instagram, 'INSTAGRAM'),
+        ],
+      ),
     );
 
     List<Widget> _children = [
       CalendarEvent(),
       templeInfo,
-      MailingListForm(),
+      MailingListWebView(),
       LiveStream(),
       VolunteerForm(),
     ];
     DefaultTabController controller = DefaultTabController(
       length: 5,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Sri Vidya Temple'),
-        ),
-        bottomNavigationBar: new Theme(
-          data: Theme.of(context).copyWith(
-          // sets the background color of the `BottomNavigationBar`
-          canvasColor: _templeTheme.primaryColor,
-        textTheme: Theme
-            .of(context)
-            .textTheme
-            .copyWith(caption: new TextStyle(color: Colors.yellow))),
-        child: BottomNavigationBar(
-          currentIndex: index,
-          onTap: (int i) {setState((){index = i;});},
-          items: [
-            new BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today),
-              title: new Text('Calendar'),
-            ),
-            new BottomNavigationBarItem(
-              icon: Icon(Icons.info),
-              title: new Text('Temple Info'),
-            ),
-            new BottomNavigationBarItem(
-              icon: Icon(Icons.mail),
-              title: new Text('Mailing List'),
-            ),
-            new BottomNavigationBarItem(
-              icon: Icon(Icons.live_tv),
-              title: new Text('Live Stream'),
-            ),
-            // new BottomNavigationBarItem(
-            //   icon: Icon(Icons.folder_open),
-            //   title: new Text('Volunteer Form'),
-            // ),
-          ]
-        )),
-        body: Container(
-          child: _children[index],
-          constraints: BoxConstraints.expand(),
-        )
-      ),
+          appBar: AppBar(
+            title: Text('Sri Vidya Temple Society',
+                style: TextStyle(fontFeatures: [FontFeature.enable('smcp')])),
+          ),
+          bottomNavigationBar: new Theme(
+              data: Theme.of(context).copyWith(
+                  // sets the background color of the `BottomNavigationBar`
+                  canvasColor: _templeTheme.accentColor,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .copyWith(caption: new TextStyle(color: Colors.yellow))),
+              child: BottomNavigationBar(
+                  currentIndex: index,
+                  onTap: (int i) {
+                    setState(() {
+                      index = i;
+                    });
+                  },
+                  selectedFontSize: 12,
+                  items: [
+                    new BottomNavigationBarItem(
+                      icon: Icon(Icons.calendar_today),
+                      title: new Text('CALENDAR'),
+                    ),
+                    new BottomNavigationBarItem(
+                      icon: Icon(Icons.info),
+                      title: new Text('TEMPLE INFO'),
+                    ),
+                    new BottomNavigationBarItem(
+                      icon: Icon(Icons.mail),
+                      title: new Text('MAILING LIST'),
+                    ),
+                    new BottomNavigationBarItem(
+                      icon: Icon(Icons.live_tv),
+                      title: new Text('LIVE STREAM'),
+                    ),
+                    // new BottomNavigationBarItem(
+                    //   icon: Icon(Icons.folder_open),
+                    //   title: new Text('Volunteer Form'),
+                    // ),
+                  ])),
+          body: Container(
+            child: _children[index],
+            constraints: BoxConstraints.expand(),
+          )),
     );
 
     // This method is rerun every time setState is called, for instance as done
@@ -180,57 +185,66 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return controller;
   }
 
-    GestureDetector _buildButtonColumn(Color color, IconData icon, String label) {
-    onTap(){
-      if(label == "CALL"){
-        launch("tel://5855331970");
-      }else if(label == "EMAIL"){
-        launch("mailto://info@srividya.org");
-      }else if(label == "WEBSITE"){
+  GestureDetector _buildButtonColumn(Color color, IconData icon, String label) {
+    onTap() {
+      if (label == "CALL") {
+        launch("tel:5855331970");
+      } else if (label == "EMAIL") {
+        launch("mailto:info@srividya.org");
+      } else if (label == "WEBSITE") {
         launch("https://srividya.org/");
-      }else if(label == "MAP"){
-        if(Platform.isIOS) {
-          launch("https://maps.apple.com/?sll=42.997884,-77.702095&q=Sri%20Vidya%20Temple%20Society");
+      } else if (label == "MAP") {
+        if (Platform.isIOS) {
+          launch(
+              "https://maps.apple.com/?sll=42.997884,-77.702095&q=Sri%20Vidya%20Temple%20Society");
         } else {
-          launch("https://www.google.com/maps/search/?api=1&query=Sri+Vidya+Temple+Society");
+          launch(
+              "https://www.google.com/maps/search/?api=1&query=Sri+Vidya+Temple+Society");
         }
-      }else if(label == "INSTAGRAM"){
+      } else if (label == "INSTAGRAM") {
         launch("https://www.instagram.com/srividyatemple/");
-      }else if(label == "FACEBOOK"){
+      } else if (label == "FACEBOOK") {
         launch("https://www.facebook.com/SriVidyaTemple/");
-      }else if(label == "NEWS"){
+      } else if (label == "NEWS") {
         launch("https://srividya.org/category/temple-news/");
-      }else if(label == "FAQ"){
-        launch("https://srividya.org/faqs/");
-      }else if(label == "SCHEDULE"){
-        launch("https://srividya.org/visiting-info/daily-puja-schedule/");
-      }else if(label == "HOURS"){
-        launch("https://srividya.org/visiting-info/temple-hours/");
-      }else if(label == "ATTIRE"){
-        launch("https://srividya.org/visiting-info/dress-code-etiquette/");
-      }else{
-        launch("https://bookstore.srividya.org/");
+      } else if (label == "HOURS") {
+        launch("https://srividya.org/visiting-info/hours-timings/");
+      } else if (label == "VISITOR INFO") {
+        launch("https://srividya.org/visitor-info/");
+      } else if (label == "SPONSOR") {
+        launch("https://give.srividya.org/");
+      } else if (label == "YOUTUBE") {
+        launch("https://www.youtube.com/c/SriVidyaTemple");
+      } else if (label == "BALA VIDYA") {
+        launch("https://www.youtube.com/channel/UCo2XcGcRRGSkFxYGHohE-Zw");
+      } else if (label == "GRANITE TEMPLE") {
+        launch("https://www.srividya.org/granite-temple/");
       }
     }
+
     return GestureDetector(
-      onTap: onTap,
-      child:Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, color: color),
-        Container(
-          margin: const EdgeInsets.only(top: 8),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
+        onTap: onTap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
               color: color,
+              size: 30,
             ),
-          ),
-        ),
-      ],
-    ));
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }
