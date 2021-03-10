@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'calendar/calendar_event.dart';
 import 'volunteer_form/volunteer_form.dart';
-import 'mailing_list/services/mailingListAPI.dart';
+import 'mailing_list/services/mailingList.dart';
 import 'live_stream/live_stream.dart';
 import 'package:flutter/rendering.dart';
 import 'colors.dart';
@@ -102,17 +102,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           padding: const EdgeInsets.all(4.0),
           children:[
               _buildButtonColumn(color, Icons.call, 'CALL'),
-              _buildButtonColumn(color, Icons.pin_drop, 'MAP'),
-              _buildButtonColumn(color, Icons.hourglass_full, 'HOURS'),
               _buildButtonColumn(color, Icons.email, 'EMAIL'),
-              _buildButtonColumn(color, Icons.view_list, 'SCHEDULE'),
-              _buildButtonColumn(color, Icons.card_giftcard, 'SPONSOR'),
-              _buildButtonColumn(color, Icons.wc, 'ATTIRE'),
-              _buildButtonColumn(color, Icons.language, 'WEBSITE'),
-              _buildButtonColumn(color, Icons.local_library, 'FAQ'),
-              _buildButtonColumn(color, FontAwesomeIcons.facebook, 'FACEBOOK'),
+              _buildButtonColumn(color, Icons.pin_drop, 'MAP'),
+              _buildButtonColumn(color, Icons.wc, 'VISITOR INFO'),
+              _buildButtonColumn(color, Icons.hourglass_full, 'HOURS'),
               _buildButtonColumn(color, Icons.tap_and_play, 'NEWS'),
+              _buildButtonColumn(color, Icons.card_giftcard, 'SPONSOR'),
+              _buildButtonColumn(color, Icons.language, 'WEBSITE'),
+              _buildButtonColumn(color, FontAwesomeIcons.facebook, 'FACEBOOK'),
               _buildButtonColumn(color, FontAwesomeIcons.instagram, 'INSTAGRAM'),
+              _buildButtonColumn(color, FontAwesomeIcons.youtube, 'YOUTUBE'),
+            _buildButtonColumn(color, FontAwesomeIcons.child, 'BALA VIDYA'),
             ],
           ),
     );
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     List<Widget> _children = [
       CalendarEvent(),
       templeInfo,
-      MailingListForm(),
+      MailingListWebView(),
       LiveStream(),
       VolunteerForm(),
     ];
@@ -128,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       length: 5,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Sri Vidya Temple'),
+          title: Text('Sri Vidya Temple Society'),
         ),
         bottomNavigationBar: new Theme(
           data: Theme.of(context).copyWith(
@@ -141,22 +141,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         child: BottomNavigationBar(
           currentIndex: index,
           onTap: (int i) {setState((){index = i;});},
+            selectedFontSize: 12,
           items: [
             new BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today),
-              title: new Text('Calendar'),
+              title: new Text('CALENDAR'),
             ),
             new BottomNavigationBarItem(
               icon: Icon(Icons.info),
-              title: new Text('Temple Info'),
+              title: new Text('TEMPLE INFO'),
             ),
             new BottomNavigationBarItem(
               icon: Icon(Icons.mail),
-              title: new Text('Mailing List'),
+              title: new Text('MAILING LIST'),
             ),
             new BottomNavigationBarItem(
               icon: Icon(Icons.live_tv),
-              title: new Text('Live Stream'),
+              title: new Text('LIVE STREAM'),
             ),
             // new BottomNavigationBarItem(
             //   icon: Icon(Icons.folder_open),
@@ -183,9 +184,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     GestureDetector _buildButtonColumn(Color color, IconData icon, String label) {
     onTap(){
       if(label == "CALL"){
-        launch("tel://5855331970");
+        launch("tel:5855331970");
       }else if(label == "EMAIL"){
-        launch("mailto://info@srividya.org");
+        launch("mailto:info@srividya.org");
       }else if(label == "WEBSITE"){
         launch("https://srividya.org/");
       }else if(label == "MAP"){
@@ -200,16 +201,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         launch("https://www.facebook.com/SriVidyaTemple/");
       }else if(label == "NEWS"){
         launch("https://srividya.org/category/temple-news/");
-      }else if(label == "FAQ"){
-        launch("https://srividya.org/faqs/");
-      }else if(label == "SCHEDULE"){
-        launch("https://srividya.org/visiting-info/daily-puja-schedule/");
       }else if(label == "HOURS"){
-        launch("https://srividya.org/visiting-info/temple-hours/");
-      }else if(label == "ATTIRE"){
-        launch("https://srividya.org/visiting-info/dress-code-etiquette/");
-      }else{
-        launch("https://bookstore.srividya.org/");
+        launch("https://srividya.org/visiting-info/hours-timings/");
+      }else if(label == "VISITOR INFO"){
+        launch("https://srividya.org/visitor-info/");
+      }else if(label == "SPONSOR"){
+        launch("https://give.srividya.org/");
+      }else if(label == "YOUTUBE"){
+        launch("https://www.youtube.com/c/SriVidyaTemple");
+      }else if(label == "BALA VIDYA"){
+        launch("https://www.youtube.com/channel/UCo2XcGcRRGSkFxYGHohE-Zw");
       }
     }
     return GestureDetector(
@@ -218,14 +219,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, color: color),
+        Icon(icon, color: color, size: 30,),
         Container(
           margin: const EdgeInsets.only(top: 8),
           child: Text(
             label,
             style: TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w700,
               color: color,
             ),
           ),
